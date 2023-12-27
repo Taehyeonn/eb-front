@@ -2,8 +2,8 @@
     <div>
       <h1>자유게시판 - 목록</h1>
     </div>
-    <SearchFilter />
-    <hr>
+    <!-- <SearchFilter /> -->
+    <!-- <hr> -->
     <main>
     <BoardList />
     </main>

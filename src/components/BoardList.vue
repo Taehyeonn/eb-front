@@ -1,5 +1,17 @@
 <template>
   <div>
+    <div>
+      <input v-model="searchFilter.startDate" type="date" placeholder="Start Date">
+        -
+      <input v-model="searchFilter.endDate" type="date" placeholder="End Date">
+      <select v-model="searchFilter.category">
+        <option value="0" selected>전체 카테고리</option>
+        <option v-for="category in categoryList" :value="category.id">{{ category.name }}</option>
+      </select>
+      <input v-model="searchFilter.searchText" type="text" placeholder="검색어를 입력해주세요. (제목+작성자+내용)">
+      <button @click="sendDataToServer">조회</button>
+    </div>
+    <hr>
     <table>
       <thead>총 {{ pagination.totalCount }}개
         <tr>
@@ -49,32 +61,72 @@ import axios from 'axios';
 
 export default {
   data() {
+    const today = new Date();
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+
     return {
       boards: [],
-      pagination: [],
+      pagination: {},
+      categoryList: [],
+      searchFilter: {
+        startDate: oneYearAgo.toISOString().split('T')[0],
+        endDate: today.toISOString().split('T')[0],
+        category: '0',
+        searchText: ''
+      },
     };
   },
   methods: {
     // API 호출 또는 다른 방법으로 데이터를 불러오는 로직
-    loadData() {
+    loadData(searchFilter) {
       // Axios를 사용하여 서버에 GET 요청을 보냄
       axios.get('/api/list', {
         params: {
           pageNum: this.pagination.pageNum || 1, 
+          searchText: this.searchFilter.searchText,
+          startDate: this.searchFilter.startDate,
+          endDate: this.searchFilter.endDate,
+          category: this.searchFilter.category,
         },
       })
       .then(response => {
         // 성공적으로 받은 응답을 데이터에 할당
         this.boards = response.data.data.boards;
         this.pagination = response.data.data.pagination;
+        this.categoryList = response.data.data.categoryList;
+        this.searchFilter = response.data.data.searchFilter;
       })
       .catch(error => {
         // 에러가 발생한 경우 콘솔에 로그 출력
         console.error('Error fetching data:', error);
       });
     },
+    // loadData()실행
+    sendDataToServer() {
+
+      this.pagination.pageNum = 1;
+
+      // Vue Router를 사용하여 쿼리스트링 업데이트
+      this.$router.push({
+          path: this.$route.path,
+          query: { ...this.searchFilter, pageNum: this.pagination.pageNum }
+        });
+      
+      this.loadData(this.searchFilter);
+  },
     // 페이지 이동을 위한 링크를 동적으로 생성하는 메서드
     getLink(pageNum) {
+
+      // searchText가 비어있지 않은 경우에만 라우터를 업데이트
+      if (this.searchFilter.searchText) {
+          // Vue Router를 사용하여 쿼리스트링 업데이트
+          this.$router.push({
+            path: this.$route.path,
+            query: { ...this.searchFilter, pageNum: this.pagination.pageNum }
+          });
+        }
+
         return {
           path: '/list',
           query: { pageNum },

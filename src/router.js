@@ -1,6 +1,6 @@
 import { createWebHistory, createRouter } from "vue-router";
 
-import View from "./views/ViewView.vue";
+import View from "./components/View.vue";
 import ListView from './views/ListView.vue';
 
 const routes = [

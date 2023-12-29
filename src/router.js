@@ -1,7 +1,8 @@
 import { createWebHistory, createRouter } from "vue-router";
 
-import View from "./components/View.vue";
 import ListView from './views/ListView.vue';
+import View from "./components/View.vue";
+import Write from "./components/BoardWrite.vue";
 
 const routes = [
   {
@@ -17,6 +18,10 @@ const routes = [
   {
     path: "/list/view/:id",
     component: View,
+  },
+  {
+    path: "/board/write",
+    component: Write,
   },
 ];
 

@@ -54,6 +54,9 @@
     <!-- 마지막 페이지로 이동 -->
     <RouterLink :to="getLink(pagination.lastPage)">&raquo;</RouterLink>
   </div>
+    <router-link to="/board/write">
+      <button>글쓰기</button>
+    </router-link>
 </template>
 
 <script>

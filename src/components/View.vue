@@ -33,30 +33,31 @@
           </li>
         </ul>
       </div>
+      <Comment/>
 
+      
       <!-- commentList 비어있을 때 -->
-      <div v-if="commentList.length === 0">
+      <!-- <div v-if="commentList.length === 0">
         <p>댓글이 없습니다.</p>
-      </div>
+      </div> -->
 
       <!-- commentList 비어있지 않을 때 -->
-      <div v-else v-for="comment in commentList" :key="comment.id">
+      <!-- <div v-else v-for="comment in commentList" :key="comment.id">
         <p>{{ comment.registrationDate.substring(0, 10) }}</p>
         <span>{{ comment.content }}</span>
         <hr>
       </div>
-      <div>
+      <div> -->
         <!-- 댓글 -->
-        <label>
+        <!-- <label>
           <textarea v-model="content" rows="3" cols="65" name="content"></textarea>
         </label>
         <button @click="submitForm">등록</button>
-      </div>
-        <button @click="">목록</button>
-        <button @click="">수정</button>
-        <button @click="">삭제</button>
+      </div> -->
       <div>
-        <!-- 버튼 -->
+        <router-link to="/write"><button>목록</button></router-link>
+        <router-link to="/write"><button>수정</button></router-link>
+        <router-link to="/write"><button>삭제</button></router-link>
       </div>
     </div> 
   </div>
@@ -64,8 +65,12 @@
 
 <script>
 import axios from 'axios';
+import Comment from '../components/Comment.vue';
 
 export default {
+  components: {
+    Comment,
+  },
   data() {
     return {
       loading: true,
@@ -76,10 +81,18 @@ export default {
       // 다른 필드들도 있을 수 있음
     };
   },
-  mounted() {
-    // 페이지 로딩 시, ViewInfoResponse를 받아오는 함수 호출
-    console.log('Route ID:', this.$route.params.id);
-    this.fetchViewInfo();
+  // mounted() {
+  //   // 페이지 로딩 시, ViewInfoResponse를 받아오는 함수 호출
+  //   console.log('Route ID:', this.$route.params.id);
+  //   this.fetchViewInfo();
+  // },
+  async mounted() {
+    try {
+     console.log('Route ID:', this.$route.params.id);
+      await this.fetchViewInfo();
+    } catch (error) {
+      console.error('Error during fetchViewInfo:', error);
+    }
   },
   methods: {
     async fetchViewInfo() {
@@ -88,13 +101,13 @@ export default {
         const response = await axios.get(`/api/view/${this.$route.params.id}`);
         console.log('Server Response:', response.data);
 
-        // 데이터를 받아왔으면 false로 변경 후 출력
-        this.loading = false;
-
         // 서버 응답에서 필요한 데이터 추출
         this.board = response.data.data.board;
-        this.commentList = response.data.data.commentList;
+        this.commentList = response.data.data.dataList;
         this.fileList = response.data.data.fileList;
+
+        // 데이터를 받아왔으면 false로 변경 후 출력
+        this.loading = false;
 
       } catch (error) {
         console.error('Error fetching view info:', error);

@@ -17,7 +17,6 @@
 </div>
 </template>
 
-
 <script setup>
 import axios from 'axios';
 import {ref, onMounted} from 'vue';
@@ -39,7 +38,7 @@ onMounted(() => {
 
 async function getComments() {
     try {
-        const { data } = await axios.get(`/api/comment/${route.params.id}`); // 수정
+        const { data } = await axios.get(`/api/comments/${route.params.id}`); // 수정
         comments.value = data.dataList; // 추가
         console.log('getComments', comments.value);
         console.dir(comments.value);
@@ -48,24 +47,18 @@ async function getComments() {
     }
 }
 
-
 const postComment = () => {
-
     const data = {
         ...form.value
     }
-
-    axios.post(`/api/comment/${route.params.id}`, {data})
+    axios.post(`/api/comments/${route.params.id}`, {data})
   .then(function (response) {
     console.log(response);
     console.log('data=',{data});
-    // route.push({ name: 'BoardList' }); 이동하는 메서드
+    // 새로고침 하는 메서드 추가 필요
   })
   .catch(function (error) {
     console.log(error);
   });
-
-
 }
-
 </script>

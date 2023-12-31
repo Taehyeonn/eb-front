@@ -1,12 +1,14 @@
 <template>
 <p>댓글: {{ comments.length }}개</p>
 
+<!-- 댓글 조회 -->
 <div v-for="comment in comments" :key="comment.id">
 <p>{{ comment.registrationDate.substring(0, 10) }}</p>
 <span>{{ comment.content }}</span>
 <hr>
 </div>
-<!-- 댓글작성 -->
+
+<!-- 댓글 작성 -->
 <div>
     <form @submit.prevent="postComment">
         <label>
@@ -18,11 +20,11 @@
 </template>
 
 <script setup>
-import axios from 'axios';
+import apiComment from '@/api/Comment';
 import {ref, onMounted} from 'vue';
-import { useRoute } from 'vue-router'; // 추가
+import { useRoute } from 'vue-router'; 
 
-const route = useRoute(); // 추가
+const route = useRoute(); 
 const comments = ref([]);
 const boardId = ref(null);
 
@@ -33,32 +35,34 @@ const form = ref({
 
 onMounted(() => {
     boardId.value = route.params.id; // 수정
-    getComments();
+    // getComments();
+    getComments(boardId.value);
 })
 
-async function getComments() {
+/**
+ * 파라미터(게시글번호)에 해당하는 댓글을 불러온다
+ */
+async function getComments(boardId) {
     try {
-        const { data } = await axios.get(`/api/comments/${route.params.id}`); // 수정
-        comments.value = data.dataList; // 추가
+        const { data } = await apiComment.getArticles(boardId);
+        comments.value = data.dataList;
         console.log('getComments', comments.value);
-        console.dir(comments.value);
     } catch (error) {
         console.error(error);
     }
 }
 
-const postComment = () => {
-    const data = {
-        ...form.value
+/**
+ * 댓글 작성
+ * ref(form)을 얕은 복사하여 apiComment.postArticle()에 넘긴다
+ */
+async function postComment() {
+    try {
+        const data = await {...form.value};
+        const { response } = await apiComment.postArticle(data);
+        console.log('response=', response);
+    } catch (error) {
+        console.error(error);
     }
-    axios.post(`/api/comments/${route.params.id}`, {data})
-  .then(function (response) {
-    console.log(response);
-    console.log('data=',{data});
-    // 새로고침 하는 메서드 추가 필요
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
 }
 </script>

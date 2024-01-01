@@ -22,9 +22,10 @@
 <script setup>
 import apiComment from '@/api/Comment';
 import {ref, onMounted} from 'vue';
-import { useRoute } from 'vue-router'; 
+import { useRouter, useRoute } from 'vue-router'; 
 
 const route = useRoute(); 
+const router = useRouter(); //router.push, router.replace, router.go 등
 const comments = ref([]);
 const boardId = ref(null);
 
@@ -35,7 +36,6 @@ const form = ref({
 
 onMounted(() => {
     boardId.value = route.params.id; // 수정
-    // getComments();
     getComments(boardId.value);
 })
 
@@ -61,6 +61,8 @@ async function postComment() {
         const data = await {...form.value};
         const { response } = await apiComment.postArticle(data);
         console.log('response=', response);
+
+        router.go(0); // 새로고침
     } catch (error) {
         console.error(error);
     }

@@ -1,7 +1,4 @@
 <template>
-    <div>
-      <h1>자유게시판 - 글쓰기</h1>
-    </div>
     <form @submit.prevent="postBoard" >
         <label>카테고리: </label>
         <select v-model="board.categoryId">
@@ -24,14 +21,20 @@
         <label for="content">내용:</label>
         <textarea id="content" v-model="board.content" required></textarea>
         <br>
+        <input type="file" @change="onInputImage" multiple>
+        <br>
         <router-link to="/list"><button>취소</button></router-link>
         <button type="submit">제출</button>
     </form>
 </template>
 
 <script setup>
-import axios from 'axios';
+import apiBoard from '@/api/Board';
+import apiCategory from '@/api/Category';
 import {ref, onMounted} from 'vue';
+import { useRouter } from 'vue-router'; 
+
+const router = useRouter(); 
 
 const categories = ref([]);
 
@@ -42,41 +45,53 @@ const board = ref({
     title: '',
     content: '',
     confirmPassword: '',
+    // files: [],
 })
+const files = ref([]);
 
 onMounted(() => {
     getCategories();
 })
 
+/**
+ * get /api/categories
+ * 카테고리 리스트를 받아와 categories.value에 저장한다
+ */
 async function getCategories() {
     try {
-        const { data } = await axios.get(`/api/categories`); 
-        categories.value = data.dataList;
+        const { data } = await apiCategory.getArticles();
+        categories.value = data;
         console.log('getCategories', categories.value);
-        console.dir(categories.value);
     } catch (error) {
         console.error(error);
     }
 }
 
-async function postBoard() {
-  const data = {
-    ...board.value,
-  };
-
-  try {
-    const response = await axios.post('/api/boards', {
-      confirmPassword: data.confirmPassword,
-      categoryId: data.categoryId,
-      writer: data.writer,
-      password: data.password,
-      title: data.title,
-      content: data.content,
-    });
-    console.log('게시물 등록.', response.data);
-  } catch (error) {
-    console.error('게시물 등록 중 오류 발생:', error);
-  }
+/**
+ * post /api/boards
+ * 입력받은 데이터들을 서버에 보내 게시글 작성한다
+ */
+ async function postBoard() {
+    try {
+        const data = await {...board.value};
+        const { response } = await apiBoard.postArticle(data, files);
+        console.log('response=', response);
+        router.push('/list'); // 목록으로 이동
+    } catch (error) {
+      console.error('게시물 등록 중 오류 발생:', error);
+    }
 }
 
+/**
+ * 파일 선택시 배열에 저장
+ * @param {*} event 
+ */
+const onInputImage = (event) => {
+  // 이벤트 객체가 유효한지 확인
+  if (event && event.target) {
+    console.log(event.target.files);
+    // 선택된 파일들을 files 배열에 저장
+    files.value = event.target.files;
+  }
+};
 </script>

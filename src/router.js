@@ -2,7 +2,7 @@ import { createWebHistory, createRouter } from "vue-router";
 
 import ListView from './views/ListView.vue';
 import View from "./views/View.vue";
-import Write from "./components/BoardWrite.vue";
+import Write from "./views/Write.vue";
 
 const routes = [
   {

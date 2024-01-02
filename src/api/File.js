@@ -11,4 +11,15 @@ export default {
     getArticles (boardId) {
         return axios.get(`/api/files/${boardId}`);
     },
+
+    /**
+     * 파일 다운로드
+     * @param {*} fileId 파일 번호
+     * @returns byte[]
+     */
+    getArticle(fileId) {
+        return axios.get(`/api/download/${fileId}`, {
+            responseType: 'blob',
+        });
+    },
 }

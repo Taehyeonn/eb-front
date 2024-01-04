@@ -1,8 +1,9 @@
 import { createWebHistory, createRouter } from "vue-router";
 
-import ListView from './views/ListView.vue';
+// import ListView from './views/ListView.vue';
 import View from "./views/View.vue";
 import Write from "./views/Write.vue";
+import List from "./views/List.vue";
 
 const routes = [
   {
@@ -11,16 +12,14 @@ const routes = [
   },
   {
     path: "/list",
-    component: ListView,
-    //페이지처리. 만약 페이지에 해당하는 숫자 입력이 없으면 첫 페이지로
-    props: route => ({ pageNum: parseInt(route.query.pageNum) || 1 })
+    component: List,
   },
   {
     path: "/list/view/:id",
     component: View,
   },
   {
-    path: "/board/write",
+    path: "/list/write",
     component: Write,
   },
 ];

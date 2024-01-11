@@ -47,4 +47,18 @@ export default {
             },
         });
     },
+
+    /**
+     * 게시글 삭제
+     * @param {*} boardId 게시글 번호
+     * @param {*} password 비밀번호
+     * @returns 
+     */
+    deleteArticle(boardId, password) {
+        return axios.delete(`/api/boards/${boardId}`, {
+            params: {
+                password: password
+            }
+        });
+    },
 }

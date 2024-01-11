@@ -1,9 +1,9 @@
 import { createWebHistory, createRouter } from "vue-router";
 
-// import ListView from './views/ListView.vue';
 import View from "./views/View.vue";
 import Write from "./views/Write.vue";
 import List from "./views/List.vue";
+import Delete from "./views/Delete.vue";
 
 const routes = [
   {
@@ -21,6 +21,10 @@ const routes = [
   {
     path: "/list/write",
     component: Write,
+  },
+  {
+    path: "/list/view/:id/delete",
+    component: Delete,
   },
 ];
 

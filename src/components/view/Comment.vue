@@ -45,7 +45,7 @@ onMounted(() => {
 async function getComments(boardId) {
     try {
         const { data } = await apiComment.getArticles(boardId);
-        comments.value = data.dataList;
+        comments.value = data;
         console.log('getComments', comments.value);
     } catch (error) {
         console.error(error);

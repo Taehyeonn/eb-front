@@ -5,10 +5,13 @@
         </div>
         <div>
         <!-- 검색 컴포넌트 -->
-        <Search @sendQueryToServer="getBoards"/>
+        <Search @sendQueryToServer="getBoards"/> 
+        <!-- 이벤트 명에는 on을 붙여서 -->
+        <!-- 어떤 액션을 하는지가 아니라 어떤 이벤트가 발생했는지 -->
+        <!-- 이벤트 핸들러도 명확하게 -->
     
         <!-- 게시글 리스트 출력 컴포넌트 -->
-        <PostList :boards='boards' :totalCount="pagination.totalCount"/>
+        <BoardList :boards='boards' :totalCount="pagination.totalCount"/>
 
         <!-- 페이지네이션 컴포넌트 -->
         <Pagination :pagination='pagination' @handlePageNum="getBoards"/>
@@ -21,7 +24,7 @@
 
 <script setup>
 import Search from "@/components/list/Search.vue";
-import PostList from "@/components/list/PostList.vue";
+import BoardList from "@/components/list/BoardList.vue";
 import Pagination from "@/components/list/Pagination.vue";
 
 import apiBoard from '@/api/Board';
@@ -30,7 +33,7 @@ import { useRoute } from 'vue-router';
 
 const components = {
     Search,
-    PostList,
+    BoardList,
     Pagination,
 };
 
